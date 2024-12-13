@@ -4,7 +4,7 @@ DOCKER_IMAGE=$1
 DOCKER_REGISTRY=$2
 
 function build_image {
-    sudo apt install docker
+    apt install docker
     echo "Building Docker image $DOCKER_IMAGE..."
     /usr/bin/docker build -t $DOCKER_IMAGE .
 }
