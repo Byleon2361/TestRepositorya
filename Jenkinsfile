@@ -1,23 +1,41 @@
 pipeline {
-    agent any 
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "nginx:latest"
+        DOCKER_REGISTRY = "jenkins.example.localhost"
+    }
+
     stages {
-        stage('Build') {
+        stage('Клонирование репозитория') {
             steps {
                 script {
-                    // Сборка Docker-образа
-                    sh 'docker build -t my_app_image .'
+                    // Указываем ветку для проверки
+                    checkout([$class: 'GitSCM', 
+                              branches: [[name: '*/main']], // Убедитесь, что ветка указана правильно
+                              userRemoteConfigs: [[url: 'https://github.com/Byleon2361/TestRepositorya']]
+                    ])
                 }
             }
         }
-        stage('Deploy') {
+
+        stage('Сборка Docker-образа') {
             steps {
-                script {
-                    // Остановка и удаление текущего контейнера
-                    sh 'docker stop my_app_container || true'
-                    sh 'docker rm my_app_container || true'
-                    // Запуск нового контейнера
-                    sh 'docker run -d --name my_app_container -p 80:80 my_app_image'
-                }
+                sh 'docker build -t $DOCKER_IMAGE .'
+            }
+        }
+
+        stage('Публикация в реестр') {
+            steps {
+                sh 'docker tag $DOCKER_IMAGE $DOCKER_REGISTRY/$DOCKER_IMAGE'
+                sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE'
+            }
+        }
+
+        stage('Развертывание контейнера') {
+            steps {
+                sh 'docker stop my-app  true && docker rm my-app  true'
+                sh 'docker run -d --name my-app -p 80:80 $DOCKER_REGISTRY/$DOCKER_IMAGE'
             }
         }
     }
