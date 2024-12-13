@@ -1,44 +1,14 @@
 pipeline {
-    agent any
-
-    environment {
-        DOCKER_IMAGE = "nginx:latest"
-        DOCKER_REGISTRY = "jenkins.example.localhost"
+    agent {
+        docker {
+            image 'alpine:latest' // Замените на необходимый образ
+            args '-u root:root'   // Добавьте, если нужно запустить контейнер с правами root
+        }
     }
-
     stages {
-        stage('Клонирование репозитория') {
+        stage('Test') {
             steps {
-                script {
-                    checkout([$class: 'GitSCM', 
-                              branches: [[name: '*/main']],
-                              userRemoteConfigs: [[url: 'https://github.com/Byleon2361/TestRepositorya']]
-                    ])
-                }
-            }
-        }
-
-        stage('Подготовка скрипта') {
-            steps {
-                sh 'chmod +x ./docker_wrapper.sh'
-            }
-        }
-
-        stage('Сборка Docker-образа') {
-            steps {
-                sh "bash ./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY build"
-            }
-        }
-
-        stage('Публикация в реестр') {
-            steps {
-                sh "bash ./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY publish"
-            }
-        }
-
-        stage('Развертывание контейнера') {
-            steps {
-                sh "bash ./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY deploy"
+                sh 'echo "Hello from Docker in Jenkins!"'
             }
         }
     }
