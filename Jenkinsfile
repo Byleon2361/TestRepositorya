@@ -9,12 +9,9 @@ pipeline {
     stages {
         stage('Клонирование репозитория') {
             steps {
-                script {
-                    checkout([$class: 'GitSCM', 
-                              branches: [[name: '*/main']],
-                              userRemoteConfigs: [[url: 'https://github.com/Byleon2361/TestRepositorya']]
-                    ])
-                }
+
+                git branch: 'main', url: 'https://github.com/Byleon2361/TestRepositorya.git'
+
             }
         }
 
