@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "my-app:latest"
-        DOCKER_REGISTRY = "registry.example.localhost"
+        DOCKER_IMAGE = "nginx:latest"
+        DOCKER_REGISTRY = "jenkins.example.localhost"
     }
 
     stages {
