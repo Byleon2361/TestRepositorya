@@ -10,9 +10,8 @@ pipeline {
         stage('Клонирование репозитория') {
             steps {
                 script {
-                    // Указываем ветку для проверки
                     checkout([$class: 'GitSCM', 
-                              branches: [[name: '*/main']], // Убедитесь, что ветка указана правильно
+                              branches: [[name: '*/main']],
                               userRemoteConfigs: [[url: 'https://github.com/Byleon2361/TestRepositorya']]
                     ])
                 }
@@ -21,21 +20,19 @@ pipeline {
 
         stage('Сборка Docker-образа') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                sh "./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY build"
             }
         }
 
         stage('Публикация в реестр') {
             steps {
-                sh 'docker tag $DOCKER_IMAGE $DOCKER_REGISTRY/$DOCKER_IMAGE'
-                sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE'
+                sh "./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY publish"
             }
         }
 
         stage('Развертывание контейнера') {
             steps {
-                sh 'docker stop my-app || true && docker rm my-app || true'
-                sh 'docker run -d --name my-app -p 80:80 $DOCKER_REGISTRY/$DOCKER_IMAGE'
+                sh "./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY deploy"
             }
         }
     }
