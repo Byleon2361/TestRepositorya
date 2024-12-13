@@ -10,7 +10,7 @@ pipeline {
         stage('Клонирование репозитория') {
             steps {
 
-                git branch: 'main', url: 'https://github.com/Byleon2361/TestRepositorya.git'
+                sh 'git clone https://github.com/Byleon2361/TestRepositorya.git'
 
             }
         }
