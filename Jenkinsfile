@@ -18,6 +18,12 @@ pipeline {
             }
         }
 
+        stage('Подготовка скрипта') {
+            steps {
+                sh 'chmod +x ./docker_wrapper.sh'
+            }
+        }
+
         stage('Сборка Docker-образа') {
             steps {
                 sh "./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY build"
