@@ -26,19 +26,19 @@ pipeline {
 
         stage('Сборка Docker-образа') {
             steps {
-                sh "./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY build"
+                sh "bash ./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY build"
             }
         }
 
         stage('Публикация в реестр') {
             steps {
-                sh "./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY publish"
+                sh "bash ./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY publish"
             }
         }
 
         stage('Развертывание контейнера') {
             steps {
-                sh "./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY deploy"
+                sh "bash ./docker_wrapper.sh $DOCKER_IMAGE $DOCKER_REGISTRY deploy"
             }
         }
     }
